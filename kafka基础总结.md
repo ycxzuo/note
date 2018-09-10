@@ -1,4 +1,4 @@
-# kafka总结
+# kafka基础总结
 
 ## 概述
 
@@ -31,7 +31,7 @@ producer发送多个消息到broker上的同一个分区时,为了减少网络�
 
 producer默认会把两次发送的时间间隔内手机的所有请求进行一次聚合然后发送,以此来提高吞吐量.linger.ms就是为每次发送到broker的请求增加一些delay,以此来聚合更多的Message请求.(如TCP的小包等-停协议)
 
-*Ps:如果同时配置了batch.size和linger.ms,只要满足其中一个要求就会发送请求到broker上.*
+*Ps:默认值为0,即只配置batch.size是不会有效果的,因为配置了batch.size和linger.ms,只要满足其中一个要求就会发送请求到broker上.*
 
 #### max.request.size
 
@@ -77,7 +77,7 @@ topic可以划分多个partition(至少一个),同一个topic下的不同分区�
 
 ### offset
 
-它是消息在此partition中的唯一编号.kafka通过offset保证消息在分区内的顺序.offset不夸分区.所以kafka只保证分区内消息有序.对于应用层的消费来说,每次消费一个消息并且提交以后,会保存当前消费到的最近的哟个offset.
+它是消息在此partition中的唯一编号.kafka通过offset保证消息在分区内的顺序.offset不夸分区.所以kafka只保证分区内消息有序.对于应用层的消费来说,每次消费一个消息并且提交以后,会保存当前消费到的最近的那个offset.
 
 ### metadata
 
