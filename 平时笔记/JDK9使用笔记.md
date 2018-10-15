@@ -37,6 +37,15 @@
 
 因为JAXB-API是JAVAEE的一部分，只是没有默认引入而已，Java9引入模块的概念，可以使用`--add-modules java.xml.bind`引入
 
+JDK9默认未引入的模块
+
+* javax.activation 
+* javax.corba 
+* javax.transaction 
+* javax.xml.bind 
+* javax.xml.ws 
+* javax.xml.ws.annotation
+
 ### JAXB-API（Java API for XML Binding）简介
 
 提供了一个快速便捷的方式将Java对象与XML进行转换，在JAXB中，将一个Java对象转换为XML的过程称之为**Marshal**，将XML转换为Java对象的过程称之为**UnMarshal**。
