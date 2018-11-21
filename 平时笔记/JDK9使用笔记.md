@@ -1,5 +1,22 @@
 # JDK9
 
+## 特性
+
+### Object有了显式的构造函数
+
+```java
+@HotSpotIntrinsicCandidate
+public Object() {}
+```
+
+### registerNatives()
+
+```java
+private static native void registerNatives();
+```
+
+
+
 ## 问题解决方案
 
 ### 问题
