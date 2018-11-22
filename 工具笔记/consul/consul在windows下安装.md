@@ -1,4 +1,4 @@
-# consul在Windows环境下的安装
+# consul在Windows环境下的安装单机版
 
 1. 去官方网站下载Windows的zip包，[链接地址](https://www.consul.io/downloads.html)
 
