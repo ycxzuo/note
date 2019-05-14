@@ -172,3 +172,5 @@ public final static int MAX_PRIORITY = 10;
 
 判断线程（OS 线程）是否还存活，对应 JVM 源码在 javaClasses.cpp 942行。
 
+
+
