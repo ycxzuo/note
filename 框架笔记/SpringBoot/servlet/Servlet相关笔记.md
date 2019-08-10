@@ -38,7 +38,7 @@
 
 `@javax.servlet.annotation.HandlesTypes`
 
-用来标注该过滤出哪些类
+用来标注该关注出哪些类，但是其关注的 class 的 Set 中是该标记类的子类（包含子接口、抽象类、实现类），但是不包含自己
 
 #### *注意*
 
