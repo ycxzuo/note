@@ -67,23 +67,37 @@ producer默认会把两次发送的时间间隔内手机的所有请求进行一
 
 ## 主要参数
 
+### broker
+
+服务代理点，对于 Kafka 而言，broker 可以简单的看做一个独立的 Kafka 服务节点或者 Kafka 服务实例
+
+### producer
+
+生产者，发送消息的一方，负责创建消息，然后投递到 Kafka 中
+
+### consumer
+
+消费者，接收消息的一方，消费者连接到 Kafka 上并接收消息，进而进行相应的业务逻辑处理
+
 ### topic
 
-topic是一个存储消息的逻辑概念,可以认为是一个消息集合.每条消息发送到kafka集群的消息都有一个类别.物理上说,不同的topic的消息是分开存储的.每个topic可以有多个生产者向它发送消息,也可以有多个消费者去消费其中的消息.
+topic 是一个存储消息的逻辑概念，他是可以跨分区的，可以认为是一个消息集合，每条消息发送到 kafka 集群的消息都必须指定一个 topic 去发送，而消费者负责订阅 topic 并消费，每个 topic 可以有多个生产者向它发送消息，也可以有多个消费者去消费其中的消息
 
 ### partition
 
-topic可以划分多个partition(至少一个),同一个topic下的不同分区包含的消息是不同的.每个消息在被添加到分区时,都会被分配一个offset(偏移量).每一条消息发送到broker时,会根据partition的规则选择存储到哪一个partition.如果partition规则设置合理,那么所有的消息会均匀的分布在不同的partition中,如同数据库分库分表.partition是以文件的形式存储在文件系统中.
+topic 可以划分多个 partition (至少一个)，同一个 topic 下的不同分区包含的消息是不同的，每个消息在被添加到分区时，都会被分配一个offset (偏移量)。每一条消息发送到 broker 时,会根据 partition 的规则选择存储到哪一个 partition。如果 partition 规则设置合理，那么所有的消息会均匀的分布在不同的 partition 中，如同数据库分库分表，partition 是以文件的形式存储在文件系统中
 
 ### offset
 
-它是消息在此partition中的唯一编号.kafka通过offset保证消息在分区内的顺序.offset不夸分区.所以kafka只保证分区内消息有序.对于应用层的消费来说,每次消费一个消息并且提交以后,会保存当前消费到的最近的那个offset.
+它是消息在此 partition 中的唯一编号。Kafka 通过 offset 保证消息在分区内的顺序。offset 不跨分区。所以Kafka 只保证分区内消息有序。对于应用层的消费来说，每次消费一个消息并且提交以后，会保存当前消费到的最近的那个 offset
 
 ### metadata
 
-topic/partition和broker的映射关系,每一个topic的每一个partition,需要知道对应的broker列表是什么.leader和follower是谁,这些信息都存在metadata内.
+topic/partition 和 broke r的映射关系，每一个 topic 的每一个 partition，需要知道对应的 broker 列表是什么。 leader 和 follower 是谁，这些信息都存在metadata内
 
+### replicas
 
+分区引入多副本机制，通过增加副本数量可以提升容灾能力。同一分区不同副本中保存的是相同的消息（在同一时刻，副本之间并非完全一样），副本之间是“一主多从”，leader 副本负责处理读写请求，follower 副本只负责与 leader 副本的消息同步
 
 ## 消息分发
 
