@@ -46,6 +46,27 @@ public static EmbeddedServletContainerCustomizer embeddedServletContainerCustomi
 
 ### springboot 2.0
 
+注册 Tomcat 的地方`org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory#getWebServer`
+
+```java
+public WebServer getWebServer(ServletContextInitializer... initializers) {
+    Tomcat tomcat = new Tomcat();
+    File baseDir = (this.baseDirectory != null) ? this.baseDirectory : createTempDir("tomcat");
+    tomcat.setBaseDir(baseDir.getAbsolutePath());
+    Connector connector = new Connector(this.protocol);
+    tomcat.getService().addConnector(connector);
+    customizeConnector(connector);
+    tomcat.setConnector(connector);
+    tomcat.getHost().setAutoDeploy(false);
+    configureEngine(tomcat.getEngine());
+    for (Connector additionalConnector : this.additionalTomcatConnectors) {
+        tomcat.getService().addConnector(additionalConnector);
+    }
+    prepareContext(tomcat.getHost(), initializers);
+    return getTomcatWebServer(tomcat);
+}
+```
+
 `TomcatServletWebServerFactory` 中维护了一个 `Connector` 列表和 `Servlet` 列表
 
 ```java
