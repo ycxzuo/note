@@ -81,6 +81,68 @@ Mapping 会把 JSON 文档映射成 Lucene 所需要的扁平格式
 
 
 
+### 如何显式定义一个 Mapping
+
+```properties
+PUT /movies
+{
+	"mappings": {
+		// define
+	}
+}
+```
+
+* 可以参考 API，纯手写
+* 为了减少输入，减少出错概率
+  * 创建一个临时的 index，写一些样本数据
+  * 通过访问 Mapping API 获得该临时文件的动态 Mapping 定义
+  * 修改后，使用改配置创建你的索引
+  * 删除临时索引
+
+
+
+### 控制当前字段是否被索引
+
+index 属性可以控制当前字段是否被索引，默认为 true。如果设置为 false，该字段不可被搜索
+
+
+
+### Index Options
+
+* 四种不同级别的 Index Options 配置，可以控制倒排索引记录的内容
+  * docs
+    * 记录 doc id
+  * freqs
+    * 记录 doc id 和 term frequencies
+  * positions
+    * 记录 doc id / term frequencies / term position
+  * offsets
+    * 记录 doc id / term frequencies / term position / character offects
+* Test 类型默认记录 positions，其它默认为 docs
+* 记录内容越多，占用存储空间越大
+
+
+
+### null_value
+
+* 需要对 Null 值实现搜索
+* **只有 Keyword 类型支持设定 Null_Value**
+
+
+
+### _all 或 copy_to
+
+* _all 在 7 中被 copy_to 所代替
+* 满足一些特性的搜索需求
+* copy_to 将字段的数值拷贝到目标字段，实现类似 _all 的作用
+* copy_to 的目标字段不出现在 _source 中
+
+
+
+### 数组类型
+
+Elasticsearch 中不提供专门的数组类型，但是任何字段，都可以包含多个相同类型的数值
+
 
 
 ```properties
@@ -162,7 +224,6 @@ PUT dynamic_mapping_test/_mapping
 }
 
 
-
 // 写入数据出错，HTTP Code 400
 PUT dynamic_mapping_test/_doc/12
 {
@@ -170,11 +231,154 @@ PUT dynamic_mapping_test/_doc/12
 }
 
 DELETE dynamic_mapping_test
+
+
+// 设置 index 为 false
+DELETE users
+PUT users
+{
+    "mappings" : {
+      "properties" : {
+        "firstName" : {
+          "type" : "text"
+        },
+        "lastName" : {
+          "type" : "text"
+        },
+        "mobile" : {
+          "type" : "text",
+          "index": false
+        }
+      }
+    }
+}
+
+PUT users/_doc/1
+{
+  "firstName":"Ruan",
+  "lastName": "Yiming",
+  "mobile": "12345678"
+}
+
+POST /users/_search
+{
+  "query": {
+    "match": {
+      "mobile":"12345678"
+    }
+  }
+}
+
+
+
+
+// 设定Null_value
+DELETE users
+PUT users
+{
+    "mappings" : {
+      "properties" : {
+        "firstName" : {
+          "type" : "text"
+        },
+        "lastName" : {
+          "type" : "text"
+        },
+        "mobile" : {
+          "type" : "keyword",
+          "null_value": "NULL"
+        }
+
+      }
+    }
+}
+
+PUT users/_doc/1
+{
+  "firstName":"Ruan",
+  "lastName": "Yiming",
+  "mobile": null
+}
+
+
+PUT users/_doc/2
+{
+  "firstName":"Ruan2",
+  "lastName": "Yiming2"
+
+}
+
+GET users/_search
+{
+  "query": {
+    "match": {
+      "mobile":"NULL"
+    }
+  }
+
+}
+
+
+
+// 设置 Copy to
+DELETE users
+PUT users
+{
+  "mappings": {
+    "properties": {
+      "firstName":{
+        "type": "text",
+        "copy_to": "fullName"
+      },
+      "lastName":{
+        "type": "text",
+        "copy_to": "fullName"
+      }
+    }
+  }
+}
+PUT users/_doc/1
+{
+  "firstName":"Ruan",
+  "lastName": "Yiming"
+}
+
+GET users/_search?q=fullName:(Ruan Yiming)
+
+POST users/_search
+{
+  "query": {
+    "match": {
+       "fullName":{
+        "query": "Ruan Yiming",
+        "operator": "and"
+      }
+    }
+  }
+}
+
+
+// 数组类型
+PUT users/_doc/1
+{
+  "name":"onebird",
+  "interests":"reading"
+}
+
+PUT users/_doc/1
+{
+  "name":"twobirds",
+  "interests":["reading","music"]
+}
+
+POST users/_search
+{
+  "query": {
+		"match_all": {}
+	}
+}
+
+GET users/_mapping
 ```
-
-
-
-
-
 
 
