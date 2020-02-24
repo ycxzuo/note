@@ -6,7 +6,7 @@
 
 ### 启动方式
 
-1. 直接在main()用Spring Boot引导类SpringApplication启动
+1. 直接在 main() 用 Spring Boot 引导类 SpringApplication 启动
 
 ```java
 @SpringBootApplication
@@ -18,7 +18,7 @@ public class SpringbootApplication {
 }
 ```
 
-2. 直接在main()用SpringApplicationBuilder启动(fluent API)
+2. 直接在 main() 用 SpringApplicationBuilder 启动 (fluent API)
 
 ```java
 @SpringBootApplication
@@ -30,7 +30,7 @@ public class SpringBootDemoApplication {
 }
 ```
 
-3. 在main()中使用spring的方式启动.
+3. 在 main() 中使用 spring 的方式启动.
 
 ```java
 @SpringBootApplication
@@ -44,11 +44,11 @@ public class SpringBootDemoApplication {
 }
 ```
 
-可以看到这个类就只有一个main方法,却可以跑起整个Spring Boot项目,为了解决这个疑惑,先从这个注解开始了解
+可以看到这个类就只有一个 main 方法,却可以跑起整个 Spring Boot 项目,为了解决这个疑惑,先从这个注解开始了解
 
 ### `@SpringBootApplication`
 
-`@SpringBootApplication`注解的定义(springboot1.2.0版本引入):
+`@SpringBootApplication`注解的定义 (springboot1.2.0版本引入):
 
 ```java
 @Inherited
@@ -104,7 +104,7 @@ public @interface SpringBootApplication {
     }
     ```
 
-  * `@Repository`(Spring2.0版本引入,2.0版本只能用在Dao层)
+  * `@Repository`(Spring2.0 版本引入,2.0 版本只能用在 Dao 层)
 
     ```java
     @Component
@@ -124,7 +124,7 @@ public @interface SpringBootApplication {
 
 #### `@ComponentScan `
 
-该注解如何扫描到注解的呢?全局搜索使用到ComponentScan.class的位置,不难找到用的地方
+该注解如何扫描到注解的呢?全局搜索使用到 ComponentScan.class 的位置,不难找到用的地方
 
 ```java
 class ConfigurationClassParser {
@@ -154,9 +154,9 @@ class ConfigurationClassParser {
 }
 ```
 
-`ConfigurationClassParser`此类便为ComponentScan的处理类.
+`ConfigurationClassParser`此类便为 ComponentScan 的处理类.
 
-看见this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName())方法便可以联想到是此处进行的遍历解析.
+看见 this.componentScanParser.parse(componentScan, sourceClass.getMetadata().getClassName()) 方法便可以联想到是此处进行的遍历解析.
 
 ```java
 class ComponentScanAnnotationParser {
@@ -170,7 +170,7 @@ class ComponentScanAnnotationParser {
 }
 ```
 
-可以看见在此处,new了一个ClassPathBeanDefinitionScanner实例.点进去看下该构造方法:
+可以看见在此处,new 了一个 ClassPathBeanDefinitionScanner 实例.点进去看下该构造方法:
 
 ```java
 public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateComponentProvider {
@@ -227,7 +227,7 @@ private WebApplicationType deduceWebApplicationType() {
 }
 ```
 
-在不手动去设置的情况下:默认是Spring MVC
+在不手动去设置的情况下:默认是 Spring MVC
 
 * `WebApplicationType.REACTIVE` : Spring WebFlux
   - `DispatcherHandler`(核心类)
@@ -242,7 +242,7 @@ private WebApplicationType deduceWebApplicationType() {
 * `WebApplicationType.SERVLET` : Spring MVC
   - `spring-boot-starter-web` 存在
 
-可以人工设置SpringApplication类型
+可以人工设置 SpringApplication 类型，这里 args 没有放进去的话，命令行参数不会生效
 
 ```java
 @SpringBootApplication
@@ -250,7 +250,7 @@ public class SpringBootDemoApplication {
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(SpringBootDemoApplication.class);
-        // 设置为非Web类型
+        // 设置为非 Web 类型
         app.setWebApplicationType(WebApplicationType.NONE);
         app.run(args);
     }
