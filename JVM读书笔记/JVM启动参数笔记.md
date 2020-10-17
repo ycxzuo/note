@@ -19,3 +19,8 @@
 
 此参数是 JDK 1.7 引入的
 
+
+
+## -XX:+PrintFlagsInitial
+
+启动时输出启动参数
