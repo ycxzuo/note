@@ -87,7 +87,7 @@ BeanDefinition 是 Spring Framework 中定义 Bean 的配置元信息接口，�
 
 ## Bean 的初始化
 
-* @PostConstruct 标注方法
+* @PostConstruct 标注方法（Java 标准）
 * 实现 InitailizingBean 接口 afterPropertiesSet() 方法
 * 自定义初始化方法
   * XML 配置：<bean init-method="init" ... />
@@ -95,3 +95,23 @@ BeanDefinition 是 Spring Framework 中定义 Bean 的配置元信息接口，�
   * Java API：AbstractBeanDefinition#setInitMethodName(String)
 
 执行顺序是从上到下，自定义方法基本最后都是使用 AbstractBeanDefinition#setInitMethodName(String) set 进 BeanDefinition 的
+
+
+
+## Bean 延迟初始化
+
+* XML 配置：<bean lazy-init="true" .../>
+* Java 注解：@Lazy(true)
+
+
+
+## Bean 销毁
+
+* @PreDestroy 标注方法（Java 标准）
+* 实现 DisposableBean 接口的 distroy() 方法
+* 自定义销毁方法
+  * XML 配置：<bean destroy-method="destroy" ... />
+  * Java 注解：@Bean(destroy="destroy")
+  * Java API：AbstractBeanDefinition#setDestroyMethodName(String)
+
+执行顺序是从上到下，自定义方法基本最后都是使用 
