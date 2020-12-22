@@ -17,6 +17,8 @@ System.out.println(userRepository.getBeanFactory() == userRepository); // false
 
 所以探究底层的时候用 getBeanFactory 而非直接替换
 
+BeanDefinitionReader#loadBeanDefinitions 将 BeanDefinition 注册到 BeanFactory 中，其底层是调用 BeanDefinitionReaderUtils#registerBeanDefinition 方法注册，没有像 ConfigurableApplicationContext#refresh 方法内部 ConfigurableApplicationContext#registerBeanPostProcessors 阶段
+
 
 
 ## ApplicationContext 还具有其他功能
@@ -30,3 +32,15 @@ System.out.println(userRepository.getBeanFactory() == userRepository); // false
 * 国际化（i18n）
 * 注解（Annotation）
 * Environment 抽象（Environment Abstract）
+
+
+
+AbstractApplicationContext 有两个实现
+
+* GenericApplicationContext
+  * 代表类 AnnotationConfigApplicationContext
+  * 有一个 AtomicBoolean 类型的字段 refreshed 来保证 ApplicationContext 只会被 refresh 一次
+* AbstractRefreshableApplicationContext
+  * 代表类 AnnotationConfigWebApplicationContext 和 ClassPathXmlApplicationContext
+  * 有一个 Boolean 类型的字段 allowBeanDefinitionOverriding 标志 BeanDefinition 是否可以被覆盖
+  * 有一个 Boolean 类型的字段 allowCircularReferences 标志 BeanDefinition 是否支持循环引用
