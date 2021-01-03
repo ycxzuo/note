@@ -15,6 +15,7 @@
   * org.springframework.context.MessageSource
     * org.springframework.context.support.ResourceBundleMessageSource
     * org.springframework.context.support.ReloadableResourceBundleMessageSource
+    * org.springframework.context.support.StaticMessageSource
 * 主要概念
   * 文案模板编码（code）
   * 文案模板参数（args）
@@ -84,6 +85,8 @@
   * org.springframework.context.support.ResourceBundleMessageSource
 * 可重载 Properties + MessageForamt 组合 MessageSource 实现
   * org.springframework.context.support.ReloadableResourceBundleMessageSource
+* 静态编程式增加到 `Map<String, Map<Locale, MessageHolder>>` 中的 MessageSource 实现
+  * org.springframework.context.support.StaticMessageSource
 
 其重要方法主要是 `org.springframework.context.support.AbstractMessageSource#getMessage(java.lang.String, java.lang.Object[], java.util.Locale)` 获取，其中这两个开箱即用的分支在 `org.springframework.context.support.AbstractMessageSource#resolveCode` 方法中
 
@@ -108,3 +111,54 @@ ApplicationContext 本身就实现了 MessageSource 接口，Spring 注册 Messa
 * AbstractApplicationContext 的实现决定了 MessageSource 内建实现
 * Spring Boot 通过外部化配置简化 MessageSource Bean 构建
 * Spring Boot 基于 Bean Validation 校验非常普遍
+
+
+
+Spring Boot 自动化装配的时候，配置 MessageSource 的类为 `org.springframework.boot.autoconfigure.context.MessageSourceAutoConfiguration`，其注入配置的先前条件有两个
+
+* 当前 ApplicationContext 中（search = SearchStrategy.CURRENT）没有名称为 `messageSource` 的 Bean
+
+* 满足 ResourceBundleCondition 的条件
+
+  * 在 spring.messages.basename 外部化配置中配置了 MessageSource 的资源路径，默认是 classpath 下的 message.properties
+
+    ```java
+    @Override
+    public ConditionOutcome getMatchOutcome(ConditionContext context, AnnotatedTypeMetadata metadata) {
+        String basename = context.getEnvironment().getProperty("spring.messages.basename", "messages");
+        ConditionOutcome outcome = cache.get(basename);
+        if (outcome == null) {
+            outcome = getMatchOutcomeForBasename(context, basename);
+            cache.put(basename, outcome);
+        }
+        return outcome;
+    }
+    ```
+
+    返回的 ConditionOutcome 带有是否满足条件的属性，如果没找到文件，返回 false，不满足加载 MessageSource 的先前条件，如果满足，则加载 ResourceBundleMessageSource 作为 MessageSource
+
+
+
+不满足加载条件，会找父 beanFactory 中国年是否有 MessageSource，如果也没有的话，会生成一个空的实现
+
+```java
+DelegatingMessageSource dms = new DelegatingMessageSource();
+dms.setParentMessageSource(getInternalParentMessageSource());
+this.messageSource = dms;
+            ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();
+// 如果是默认的 empty messageSource 的话，是不会有 BeanDefinition 存在的，org.springframework.beans.factory.config.SingletonBeanRegistry.registerSingleton 注册的 Bean 没有 BeanDefinition，其生命周期不由 Spring 管理
+beanFactory.registerSingleton(MESSAGE_SOURCE_BEAN_NAME, this.messageSource);
+if (logger.isTraceEnabled()) {
+    logger.trace("No '" + MESSAGE_SOURCE_BEAN_NAME + "' bean, using [" + this.messageSource + "]");
+}
+```
+
+
+
+## 实现配置自动更新 MessageSource
+
+主要技术
+
+* Java NIO 2：java.nio.file.WatchService
+* Java Concurrency：java.util.concuurent.ExecutorService
+* Spring：org.springframework.context.support.AbstractMessageSource
