@@ -29,27 +29,24 @@
 
 ## javac -parameters
 
-JDK 1.8 支持获取类中方法入参的变量名称，但是如果想获取接口中的方法入参的变量名称，则需要使用上面这个虚拟机启动参数编译才能实现
+JDK 1.8 支持获取类和接口中的方法入参的变量名称，需要使用上面这个虚拟机启动参数编译才能实现，默认这个开关是关闭的
 
 maven 则可以增加
 
 ```xml
-<plugins>
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.6.0</version>
-        <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
-            <encoding>UTF-8</encoding>
-            <compilerArgs>
-                <arg>-parameters</arg>
-            </compilerArgs>
-        </configuration>
-    </plugin>
-</plugins>
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>1.8</source>
+                <target>1.8</target>
+                <compilerArgs>
+                    <compilerArg>-parameters</compilerArg>
+                </compilerArgs>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
 ```
-
-
-
