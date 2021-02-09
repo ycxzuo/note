@@ -215,7 +215,7 @@ Spring 3.0 错误接口：org.springframework.util.ErrorHandler
 
 ### 注解监听流程
 
- 	1. AnnotationConfigUtils#registerAnnotationConfigProcessors(BeanDefinitionRegistry) 注册部分 BeanDefinition 到 BeanDefinitionRegistry 里面，其中就包括 EventListenerMethodProcessor
+1. AnnotationConfigUtils#registerAnnotationConfigProcessors(BeanDefinitionRegistry) 注册部分 BeanDefinition 到 BeanDefinitionRegistry 里面，其中就包括 EventListenerMethodProcessor
 
 2. EventListenerMethodProcessor#afterSingletonsInstantiated 会在实例化的中被调用，最终调用 EventListenerMethodProcessor#processBean
 
