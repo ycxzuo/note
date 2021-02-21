@@ -138,6 +138,14 @@
 
 
 
+## @Bean 的处理流程是怎样的
+
+* 解析范围：Configuration Class 中的 @Bean 方法
+* 方法类型：静态 @Bean 方法和实例 @Bean 方法
+  * org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader#loadBeanDefinitionsForBeanMethod
+
+
+
 ## 课外资料
 
 * Spring Boot 注解
