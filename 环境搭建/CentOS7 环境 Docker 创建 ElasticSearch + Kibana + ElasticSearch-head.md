@@ -51,7 +51,7 @@ docker exec -it elasticsearch /bin/bash
 ```
 
 ```sh
-docker exec -it elasticsearch /bin/bash
+vi config/elasticsearch.yml
 ```
 
 > 在文件末尾增加如下两行配置
@@ -94,7 +94,7 @@ docker run -d --name kibana --net elasticsearch -p 5601:5601 kibana:7.14.0
 启动镜像
 
 ```sh
-docker create --name elasticsearch-head --net elasticsearch -p 9100:9100 mobz/elasticsearch-head:5
+docker run --name elasticsearch-head --net elasticsearch -p 9100:9100 mobz/elasticsearch-head:5
 ```
 
 
@@ -111,12 +111,6 @@ docker ps
 
 ```sh
 docker cp 2eb47e6ce02a:/usr/src/app/_site/vendor.js /usr/local/
-```
-
-> 修改 vendor.js
-
-```sh
-vi /usr/local/vendor.js
 ```
 
 > 替换请求头参数
