@@ -172,4 +172,4 @@ public class SyncDemo {
 }
 ```
 
-可以看见 Synchronized 关键字对应的有一对匹配的 monitorenter 和 monitorexit 操作指令，这个是虚拟机协助生成的，功能是 monitor 的上锁和解锁操作，并且在抛出异常的时候也会帮助解锁，实属方便
+可以看见 Synchronized 关键字对应的有一对匹配的 monitorenter 和 monitorexit 操作指令，这个是虚拟机协助生成的，功能是 monitor 的上锁和解锁操作，并且在抛出异常的时候也会帮助解锁
