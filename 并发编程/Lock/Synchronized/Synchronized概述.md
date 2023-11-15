@@ -24,8 +24,6 @@ JVM 中，一个对象实例对应的 instanceOopDesc
 
 
 
-
-
 ## Mark Word
 
 要讲 synchronized 关键字，就不得不说到 Mark Word 这个东西
